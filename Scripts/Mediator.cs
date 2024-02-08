@@ -9,6 +9,11 @@ namespace FazApp.UniMedatior
             HandlersContainer.PublishEvent(eventToPublish);
         }
 
+        public static void PublishEvent<TEvent>() where TEvent : BaseEvent, new()
+        {
+            HandlersContainer.PublishEvent<TEvent>();
+        }
+
         public static void AttachToEvent<TEvent>(EventHandlerDelegate eventHandler) where TEvent : BaseEvent
         {
             HandlersContainer.AttachToEventCommon<TEvent>(eventHandler);
@@ -33,10 +38,20 @@ namespace FazApp.UniMedatior
         {
             HandlersContainer.SendCommand(command);
         }
+
+        public static void SendCommand<TCommand>() where TCommand : Command, new()
+        {
+            HandlersContainer.SendCommand<TCommand>();
+        }
         
         public static void SendCommand<TCommand, TResult>(TCommand command, out TResult result) where TCommand : Command<TResult>
         {
             HandlersContainer.SendCommand(command, out result);
+        }
+
+        public static void SendCommand<TCommand, TResult>(out TResult result) where TCommand : Command<TResult>, new()
+        {
+            HandlersContainer.SendCommand<TCommand, TResult>(out result);
         }
         
         public static void AttachCommandHandler<TCommand>(CommandHandlerDelegate handler) where TCommand : Command

@@ -15,7 +15,7 @@ namespace FazApp.UniMedatior
             
             if (EventHandlersCollection.TryGetValue(eventType, out List<Delegate> handlersList) == false)
             {
-                //TODO log?
+                Debug.Log($"Event {typeof(TEvent).FullName} does not have any handlers registered");
                 return;
             }
 
@@ -32,6 +32,12 @@ namespace FazApp.UniMedatior
                     eventHandler.Invoke();
                 }
             }
+        }
+        
+        public void PublishEvent<TEvent>() where TEvent : BaseEvent, new()
+        {
+            TEvent newEvent = new();
+            PublishEvent(newEvent);
         }
         
         public void AttachToEventCommon<TEvent>(Delegate eventHandler) where TEvent : BaseEvent
@@ -63,11 +69,10 @@ namespace FazApp.UniMedatior
         public void SendCommand<TCommand>(TCommand command) where TCommand : Command
         {
             Type commandType = typeof(TCommand);
-            //Type commandType = command.GetType();
 
             if (CommandHandlersCollection.TryGetValue(commandType, out Delegate commandHandler) == false)
             {
-                //TODO log error/throw
+                Debug.LogError($"Command {typeof(TCommand).FullName} does not have any handler registered");
                 return;
             }
 
@@ -82,16 +87,21 @@ namespace FazApp.UniMedatior
                 handler.Invoke();
             }
         }
+
+        public void SendCommand<TCommand>() where TCommand : Command, new()
+        {
+            TCommand command = new();
+            SendCommand(command);
+        }
         
         public void SendCommand<TCommand, TResult>(TCommand command, out TResult result) where TCommand : Command<TResult>
         {
             result = default;
             Type commandType = typeof(TCommand);
-            //Type commandType = command.GetType();
 
             if (CommandHandlersCollection.TryGetValue(commandType, out Delegate commandHandler) == false)
             {
-                //TODO log error/throw
+                Debug.LogError($"Command {typeof(TCommand).FullName} does not have any handler registered");
                 return;
             }
 
@@ -104,11 +114,13 @@ namespace FazApp.UniMedatior
             if (commandHandler is ResultCommandHandlerDelegate<TResult> handler)
             {
                 result = handler.Invoke();
-                return;
             }
-            
-            //TODO log?
-            Debug.LogError("RETURN");
+        }
+
+        public void SendCommand<TCommand, TResult>(out TResult result) where TCommand : Command<TResult>, new()
+        {
+            TCommand command = new();
+            SendCommand(command, out result);
         }
         
         public void AttachCommandHandlerCommon<TCommand>(Delegate commandHandler) where TCommand : BaseCommand
@@ -117,10 +129,9 @@ namespace FazApp.UniMedatior
             
             if (CommandHandlersCollection.TryGetValue(commandType, out Delegate handler) == true)
             {
-                //TODO better logs
-                Debug.LogError($"Can not attach new command handler for {commandType} command - handler is already registered.\n" +
-                                $"Current handler: {handler}\n" +
-                                $"New handler: {commandHandler}");
+                Debug.LogError($"Can not attach new command handler for {commandType.FullName} command - handler is already registered.\n" +
+                                $"Current handler: {handler.Target.GetType().FullName}, method {handler.Method.Name}\n" +
+                                $"New handler: {commandHandler.Target.GetType().FullName}, method {commandHandler.Method.Name}");
                 return;
             }
 
@@ -138,7 +149,9 @@ namespace FazApp.UniMedatior
 
             if (handler != commandHandler)
             {
-                //TODO log error
+                Debug.LogError($"Command {typeof(TCommand).FullName} has different handler registered\n" +
+                               $"Handler to detach: {commandHandler.Target.GetType().FullName}, method {commandHandler.Method.Name}\n" +
+                               $"Current registered handler: {handler.Target.GetType().FullName}, method {handler.Method.Name}");
                 return;
             }
 
