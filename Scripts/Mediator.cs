@@ -4,14 +4,25 @@ namespace FazApp.UniMedatior
     {
         private static MediatorHandlersContainer HandlersContainer { get; } = new();
         
+        public static void PublishEvent<TEvent>(object sender, TEvent eventToPublish) where TEvent : BaseEvent
+        {
+            eventToPublish.Sender = sender;
+            PublishEvent(eventToPublish);
+        }
+        
         public static void PublishEvent<TEvent>(TEvent eventToPublish) where TEvent : BaseEvent
         {
-            HandlersContainer.PublishEvent(eventToPublish);
+            PublishEvent(null, eventToPublish);
         }
-
+        
         public static void PublishEvent<TEvent>() where TEvent : BaseEvent, new()
         {
-            HandlersContainer.PublishEvent<TEvent>();
+            PublishEvent(null, new TEvent());
+        }
+        
+        public static void PublishEvent<TEvent>(object sender) where TEvent : BaseEvent, new()
+        {
+            PublishEvent(sender, new TEvent());
         }
 
         public static void AttachToEvent<TEvent>(EventHandlerDelegate eventHandler) where TEvent : BaseEvent
@@ -34,26 +45,48 @@ namespace FazApp.UniMedatior
             HandlersContainer.DetachFromEventCommon<TEvent>(eventHandler);
         }
         
+        public static void SendCommand<TCommand>(object sender, TCommand command) where TCommand : Command
+        {
+            command.Sender = sender;
+            HandlersContainer.SendCommand(command);
+        }
+        
         public static void SendCommand<TCommand>(TCommand command) where TCommand : Command
         {
-            HandlersContainer.SendCommand(command);
+            SendCommand(null, command);
         }
 
         public static void SendCommand<TCommand>() where TCommand : Command, new()
         {
-            HandlersContainer.SendCommand<TCommand>();
+            SendCommand(null, new TCommand());
+        }
+        
+        public static void SendCommand<TCommand>(object sender) where TCommand : Command, new()
+        {
+            SendCommand(sender, new TCommand());
+        }
+        
+        public static void SendCommand<TCommand, TResult>(object sender, TCommand command, out TResult result) where TCommand : Command<TResult>
+        {
+            command.Sender = sender;
+            HandlersContainer.SendCommand(command, out result);
         }
         
         public static void SendCommand<TCommand, TResult>(TCommand command, out TResult result) where TCommand : Command<TResult>
         {
-            HandlersContainer.SendCommand(command, out result);
+            SendCommand(null, command, out result);
         }
 
         public static void SendCommand<TCommand, TResult>(out TResult result) where TCommand : Command<TResult>, new()
         {
-            HandlersContainer.SendCommand<TCommand, TResult>(out result);
+            SendCommand(null, new TCommand(), out result);
         }
         
+        public static void SendCommand<TCommand, TResult>(object sender, out TResult result) where TCommand : Command<TResult>, new()
+        {
+            SendCommand(sender, new TCommand(), out result);
+        }
+
         public static void AttachCommandHandler<TCommand>(CommandHandlerDelegate handler) where TCommand : Command
         {
             HandlersContainer.AttachCommandHandlerCommon<TCommand>(handler);

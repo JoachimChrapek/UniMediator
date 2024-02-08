@@ -34,11 +34,11 @@ namespace FazApp.UniMedatior
             }
         }
         
-        public void PublishEvent<TEvent>() where TEvent : BaseEvent, new()
-        {
-            TEvent newEvent = new();
-            PublishEvent(newEvent);
-        }
+        // public void PublishEvent<TEvent>() where TEvent : BaseEvent, new()
+        // {
+        //     TEvent newEvent = new();
+        //     PublishEvent(newEvent);
+        // }
         
         public void AttachToEventCommon<TEvent>(Delegate eventHandler) where TEvent : BaseEvent
         {
@@ -88,11 +88,11 @@ namespace FazApp.UniMedatior
             }
         }
 
-        public void SendCommand<TCommand>() where TCommand : Command, new()
-        {
-            TCommand command = new();
-            SendCommand(command);
-        }
+        // public void SendCommand<TCommand>() where TCommand : Command, new()
+        // {
+        //     TCommand command = new();
+        //     SendCommand(command);
+        // }
         
         public void SendCommand<TCommand, TResult>(TCommand command, out TResult result) where TCommand : Command<TResult>
         {
@@ -117,11 +117,11 @@ namespace FazApp.UniMedatior
             }
         }
 
-        public void SendCommand<TCommand, TResult>(out TResult result) where TCommand : Command<TResult>, new()
-        {
-            TCommand command = new();
-            SendCommand(command, out result);
-        }
+        // public void SendCommand<TCommand, TResult>(out TResult result) where TCommand : Command<TResult>, new()
+        // {
+        //     TCommand command = new();
+        //     SendCommand(command, out result);
+        // }
         
         public void AttachCommandHandlerCommon<TCommand>(Delegate commandHandler) where TCommand : BaseCommand
         {
