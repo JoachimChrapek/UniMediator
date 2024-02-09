@@ -66,8 +66,7 @@ namespace FazApp.UniMedatior
         
         public static void SendCommand<TCommand, TResult>(object sender, TCommand command, out TResult result) where TCommand : Command<TResult>
         {
-            command.Sender = sender;
-            HandlersContainer.SendCommand(command, out result);
+            HandlersContainer.SendCommand(sender, command, out result);
         }
         
         public static void SendCommand<TCommand, TResult>(TCommand command, out TResult result) where TCommand : Command<TResult>
