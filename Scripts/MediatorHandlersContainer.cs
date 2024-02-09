@@ -1,3 +1,4 @@
+using CodiceApp.EventTracking;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,8 +10,13 @@ namespace FazApp.UniMedatior
         private Dictionary<Type, List<Delegate>> EventHandlersCollection { get; } = new();
         private Dictionary<Type, Delegate> CommandHandlersCollection { get; } = new();
         
-        public void PublishEvent<TEvent>(TEvent eventToPublish) where TEvent : BaseEvent
+        public void PublishEvent<TEvent>(object sender, TEvent eventToPublish) where TEvent : BaseEvent
         {
+            if (eventToPublish != null)
+            {
+                eventToPublish.Sender = sender;
+            }
+            
             Type eventType = typeof(TEvent);
             
             if (EventHandlersCollection.TryGetValue(eventType, out List<Delegate> handlersList) == false)
@@ -33,12 +39,6 @@ namespace FazApp.UniMedatior
                 }
             }
         }
-        
-        // public void PublishEvent<TEvent>() where TEvent : BaseEvent, new()
-        // {
-        //     TEvent newEvent = new();
-        //     PublishEvent(newEvent);
-        // }
         
         public void AttachToEventCommon<TEvent>(Delegate eventHandler) where TEvent : BaseEvent
         {
@@ -66,8 +66,13 @@ namespace FazApp.UniMedatior
             }
         }
 
-        public void SendCommand<TCommand>(TCommand command) where TCommand : Command
+        public void SendCommand<TCommand>(object sender, TCommand command) where TCommand : Command
         {
+            if (command != null)
+            {
+                command.Sender = sender;
+            }
+            
             Type commandType = typeof(TCommand);
 
             if (CommandHandlersCollection.TryGetValue(commandType, out Delegate commandHandler) == false)
@@ -88,14 +93,13 @@ namespace FazApp.UniMedatior
             }
         }
 
-        // public void SendCommand<TCommand>() where TCommand : Command, new()
-        // {
-        //     TCommand command = new();
-        //     SendCommand(command);
-        // }
-        
-        public void SendCommand<TCommand, TResult>(TCommand command, out TResult result) where TCommand : Command<TResult>
+        public void SendCommand<TCommand, TResult>(object sender, TCommand command, out TResult result) where TCommand : Command<TResult>
         {
+            if (command != null)
+            {
+                command.Sender = sender;
+            }
+            
             result = default;
             Type commandType = typeof(TCommand);
 
@@ -117,12 +121,6 @@ namespace FazApp.UniMedatior
             }
         }
 
-        // public void SendCommand<TCommand, TResult>(out TResult result) where TCommand : Command<TResult>, new()
-        // {
-        //     TCommand command = new();
-        //     SendCommand(command, out result);
-        // }
-        
         public void AttachCommandHandlerCommon<TCommand>(Delegate commandHandler) where TCommand : BaseCommand
         {
             Type commandType = typeof(TCommand);

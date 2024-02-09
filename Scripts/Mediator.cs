@@ -6,8 +6,7 @@ namespace FazApp.UniMedatior
         
         public static void PublishEvent<TEvent>(object sender, TEvent eventToPublish) where TEvent : BaseEvent
         {
-            eventToPublish.Sender = sender;
-            PublishEvent(eventToPublish);
+            HandlersContainer.PublishEvent(sender, eventToPublish);
         }
         
         public static void PublishEvent<TEvent>(TEvent eventToPublish) where TEvent : BaseEvent
@@ -47,8 +46,7 @@ namespace FazApp.UniMedatior
         
         public static void SendCommand<TCommand>(object sender, TCommand command) where TCommand : Command
         {
-            command.Sender = sender;
-            HandlersContainer.SendCommand(command);
+            HandlersContainer.SendCommand(sender, command);
         }
         
         public static void SendCommand<TCommand>(TCommand command) where TCommand : Command
