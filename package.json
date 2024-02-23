@@ -1,7 +1,7 @@
 {
     "name": "com.fazapp.unimediator",
     "displayName": "UniMediator",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "unity": "2018.3",
     "description": "Unity implementation for mediator pattern",
     "author": "FazApp"

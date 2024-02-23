@@ -24,14 +24,16 @@ namespace FazApp.UniMedatior
                 return;
             }
 
-            foreach (Delegate handler in handlersList)
+            for (int index = handlersList.Count - 1; index >= 0; index--)
             {
+                Delegate handler = handlersList[index];
+
                 if (handler is EventHandlerDelegate<TEvent> genericEventHandler)
                 {
                     genericEventHandler.Invoke(eventToPublish);
                     continue;
                 }
-                
+
                 if (handler is EventHandlerDelegate eventHandler)
                 {
                     eventHandler.Invoke();
